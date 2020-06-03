@@ -1,8 +1,8 @@
 #include "Application.hpp"
-#include "Lang.hpp"
-#include "Update.hpp"
-#include "UpdateUtils.hpp"
-#include "Utils.hpp"
+#include "utils/Lang.hpp"
+#include "ui/screen/Update.hpp"
+#include "utils/UpdateUtils.hpp"
+#include "utils/Utils.hpp"
 
 namespace Screen {
     Update::Update(Main::Application * a) {
@@ -98,9 +98,11 @@ namespace Screen {
                 this->el->addElement(t);
             } else {
                 // Background behind buttons
-                Aether::Rectangle * r = new Aether::Rectangle(30, 88, 810, 559);
-                r->setColour(this->app->theme()->altBG());
-                this->el->addElement(r);
+                if (!this->app->config()->tImage() || this->app->config()->gTheme() != ThemeType::Custom) {
+                    Aether::Rectangle * r = new Aether::Rectangle(30, 88, 810, 559);
+                    r->setColour(this->app->theme()->altBG());
+                    this->el->addElement(r);
+                }
 
                 // Update button
                 Aether::BorderButton * bb = new Aether::BorderButton(915, 270, 260, 80, 3, "update.update"_lang, 24, [this]() {
@@ -197,7 +199,7 @@ namespace Screen {
             if (this->isDownloading) {
                 // Download thread
                 if (this->updateThread.wait_for(std::chrono::seconds(0)) == std::future_status::ready) {
-                    this->msgbox->close(true);
+                    this->msgbox->close();
                     this->threadDone = true;
                 } else {
                     // Update progress
@@ -208,7 +210,7 @@ namespace Screen {
                 // Check thread
                 if (this->data.wait_for(std::chrono::seconds(0)) == std::future_status::ready) {
                     this->threadDone = true;
-                    this->msgbox->close(true);
+                    this->msgbox->close();
                     this->showElements();
                 }
             }
@@ -229,7 +231,7 @@ namespace Screen {
                     if (b) {
                         this->app->exit();
                     } else {
-                        this->msgbox->close(true);
+                        this->msgbox->close();
                     }
                     this->isDownloading = false;
                 });

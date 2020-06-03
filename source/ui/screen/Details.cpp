@@ -1,8 +1,8 @@
 #include "Application.hpp"
-#include "Details.hpp"
-#include "Lang.hpp"
-#include "ListSession.hpp"
-#include "Utils.hpp"
+#include "ui/screen/Details.hpp"
+#include "utils/Lang.hpp"
+#include "ui/element/ListSession.hpp"
+#include "utils/Utils.hpp"
 
 // Values for summary appearance
 #define SUMMARY_BOX_HEIGHT 60
@@ -123,7 +123,7 @@ namespace Screen {
         NX::RecentPlayStatistics * ps = this->app->playdata()->getRecentStatisticsForTitleAndUser(this->app->activeTitle()->titleID(), Utils::Time::getTimeT(t), Utils::Time::getTimeT(e), this->app->activeUser()->ID());
 
         // Remove current sessions regardless
-        this->list->removeFollowingElements(this->topElm);
+        this->list->removeElementsAfter(this->topElm);
         this->list->setFocussed(this->header);
 
         // Only update list if there is activity
@@ -454,7 +454,6 @@ namespace Screen {
 
     void Details::setupSessionHelp() {
         this->msgbox->emptyBody();
-        this->msgbox->close(false);
 
         int bw, bh;
         this->msgbox->getBodySize(&bw, &bh);
@@ -473,7 +472,6 @@ namespace Screen {
     }
 
     void Details::setupSessionBreakdown(NX::PlaySession s) {
-        this->panel->close(false);
         this->panel->setPlaytime(Utils::playtimeToString(s.playtime));
         this->panel->setLength(Utils::playtimeToString(s.endTimestamp - s.startTimestamp));
 
@@ -712,7 +710,7 @@ namespace Screen {
         // Create blank messagebox
         this->msgbox = new Aether::MessageBox();
         this->msgbox->addTopButton("common.close"_lang, [this](){
-            this->msgbox->close(true);
+            this->msgbox->close();
         });
         this->msgbox->setLineColour(this->app->theme()->mutedLine());
         this->msgbox->setRectangleColour(this->app->theme()->altBG());

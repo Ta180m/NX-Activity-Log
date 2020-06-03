@@ -1,4 +1,4 @@
-#include "Lang.hpp"
+#include "utils/Lang.hpp"
 #include "Types.hpp"
 
 std::string toString(Language l) {
@@ -39,6 +39,10 @@ std::string toString(Language l) {
 
         case Language::Turkish:
             str = "Türkçe";
+            break;
+
+        case Language::Korean:
+            str = "한국어";
             break;
 
         default:

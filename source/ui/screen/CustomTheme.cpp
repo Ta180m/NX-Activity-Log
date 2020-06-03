@@ -1,7 +1,7 @@
 #include "Application.hpp"
-#include "CustomTheme.hpp"
-#include "Lang.hpp"
-#include "ThemePresets.hpp"
+#include "ui/screen/CustomTheme.hpp"
+#include "utils/Lang.hpp"
+#include "ui/ThemePresets.hpp"
 
 namespace Screen {
     CustomTheme::CustomTheme(Main::Application * a) {
@@ -52,7 +52,7 @@ namespace Screen {
         this->msgbox->setLineColour(this->app->theme()->mutedLine());
         this->msgbox->setRectangleColour(this->app->theme()->altBG());
         this->msgbox->addTopButton("common.buttonHint.ok"_lang, [this]() {
-            this->msgbox->close(true);
+            this->msgbox->close();
         });
         this->msgbox->setTextColour(this->app->theme()->accent());
         int bw, bh;
@@ -219,7 +219,6 @@ namespace Screen {
 
         // Choose from preset
         this->optionPreset = new Aether::ListButton("customTheme.preset"_lang, [this]() {
-            this->presetList->close(false);
             this->app->addOverlay(this->presetList);
         });
         this->list->addElement(this->optionPreset);

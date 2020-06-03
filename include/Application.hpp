@@ -4,11 +4,11 @@
 #include <atomic>
 #include "Config.hpp"
 #include <future>
-#include "NX.hpp"
-#include "PlayData.hpp"
+#include "utils/NX.hpp"
+#include "nx/PlayData.hpp"
 #include <stack>
-#include "Theme.hpp"
-#include "Time.hpp"
+#include "ui/Theme.hpp"
+#include "utils/Time.hpp"
 
 namespace Screen {
     class AllActivity;
@@ -18,6 +18,12 @@ namespace Screen {
     class Settings;
     class Update;
     class UserSelect;
+};
+
+enum class ReinitState {
+    False,
+    True,
+    Wait
 };
 
 namespace Main {
@@ -43,7 +49,7 @@ namespace Main {
             ScreenCreate createReason;
             // Set true by reinitScreens() in order to recreate screens
             // before next loop
-            bool reinitScreens_;
+            ReinitState reinitScreens_;
             // Create screens
             void createScreens();
             // Delete screens

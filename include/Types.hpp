@@ -1,7 +1,7 @@
 #ifndef TYPES_HPP
 #define TYPES_HPP
 
-#include "Aether.hpp"
+#include "Aether/Aether.hpp"
 #include <string>
 #include <switch.h>
 
@@ -16,6 +16,7 @@ enum Language {
     Portugese,
     Russian,
     Turkish,
+    Korean,
     TotalLanguages  // Total number of languages (only used for iterating)
 };
 // Return string matching language

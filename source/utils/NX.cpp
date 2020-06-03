@@ -1,4 +1,4 @@
-#include "NX.hpp"
+#include "utils/NX.hpp"
 
 // Maximum number of titles to read using pdm
 #define MAX_TITLES 2000
@@ -9,29 +9,6 @@ bool operator == (const AccountUid &a, const AccountUid &b) {
         return true;
     }
     return false;
-}
-
-// Here until libnx gets updated to support 10.0.0 (it's just copied from the commit that fixes the issue)
-// Note this is exactly the same as what libnx will do - I just don't want to build against it when it's not a release, this is easier :P
-Result pdmqryQueryRecentlyPlayedApplicationWorkaround(AccountUid uid, bool flag, u64 *application_ids, s32 count, s32 *total_out) {
-    Service * pdmqrySrv = pdmqryGetServiceSession();
-    if (hosversionBefore(10,0,0)) {
-        return serviceDispatchInOut(pdmqrySrv, 14, uid, *total_out,
-            .buffer_attrs = { SfBufferAttr_HipcMapAlias | SfBufferAttr_Out },
-            .buffers = { { application_ids, count*sizeof(u64) } },
-        );
-    }
-
-    const struct {
-        u8 flag;
-        u8 pad[7];
-        AccountUid uid;
-    } in = { flag!=0, {0}, uid };
-
-    return serviceDispatchInOut(pdmqrySrv, 14, in, *total_out,
-        .buffer_attrs = { SfBufferAttr_HipcMapAlias | SfBufferAttr_Out },
-        .buffers = { { application_ids, count*sizeof(u64) } },
-    );
 }
 
 namespace Utils::NX {
@@ -92,7 +69,11 @@ namespace Utils::NX {
             case SetLanguage_ES:
                 lang = Spanish;
                 break;
-                
+
+            case SetLanguage_KO:
+                lang = Korean;
+                break;
+
             default:
                 lang = Default;
                 break;
@@ -161,7 +142,7 @@ namespace Utils::NX {
         for (unsigned short i = 0; i < u.size(); i++) {
             s32 playedTotal = 0;
             TitleID * tmpIDs = new TitleID[MAX_TITLES];
-            pdmqryQueryRecentlyPlayedApplicationWorkaround(u[i]->ID(), false, tmpIDs, MAX_TITLES, &playedTotal);
+            pdmqryQueryRecentlyPlayedApplication(u[i]->ID(), false, tmpIDs, MAX_TITLES, &playedTotal);
 
             // Push back ID if not already in the vector
             for (s32 j = 0; j < playedTotal; j++) {

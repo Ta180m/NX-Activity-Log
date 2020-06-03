@@ -1,16 +1,16 @@
 #include "Application.hpp"
-#include "Curl.hpp"
-#include "Lang.hpp"
-#include "UpdateUtils.hpp"
-#include "Utils.hpp"
+#include "utils/Curl.hpp"
+#include "utils/Lang.hpp"
+#include "utils/UpdateUtils.hpp"
+#include "utils/Utils.hpp"
 
-#include "AllActivity.hpp"
-#include "CustomTheme.hpp"
-#include "Details.hpp"
-#include "RecentActivity.hpp"
-#include "Settings.hpp"
-#include "Update.hpp"
-#include "UserSelect.hpp"
+#include "ui/screen/AllActivity.hpp"
+#include "ui/screen/CustomTheme.hpp"
+#include "ui/screen/Details.hpp"
+#include "ui/screen/RecentActivity.hpp"
+#include "ui/screen/Settings.hpp"
+#include "ui/screen/Update.hpp"
+#include "ui/screen/UserSelect.hpp"
 
 // Path to background image
 #define BACKGROUND_IMAGE "/config/NX-Activity-Log/background.png"
@@ -88,7 +88,7 @@ namespace Main {
         this->setDisplayTheme();
         this->createReason = ScreenCreate::Normal;
         this->createScreens();
-        this->reinitScreens_ = false;
+        this->reinitScreens_ = ReinitState::False;
 
         if (this->isUserPage_) {
             // Skip UserSelect screen if launched via user page
@@ -111,7 +111,7 @@ namespace Main {
 
     void Application::reinitScreens(ScreenCreate c) {
         this->createReason = c;
-        this->reinitScreens_ = true;
+        this->reinitScreens_ = ReinitState::Wait;
     }
 
     void Application::createScreens() {
@@ -301,7 +301,6 @@ namespace Main {
     }
 
     void Application::createPeriodPicker() {
-        this->periodpicker->close(false);
         this->periodpicker->removeEntries();
         this->periodpicker->addEntry(toString(ViewPeriod::Day), [this](){
             if (this->viewType != ViewPeriod::Day) {
@@ -419,8 +418,10 @@ namespace Main {
         // Do main loop
         while (this->display->loop()) {
             // Check if screens should be recreated
-            if (this->reinitScreens_) {
-                this->reinitScreens_ = false;
+            if (this->reinitScreens_ == ReinitState::Wait) {
+                this->reinitScreens_ = ReinitState::True;
+            } else if (this->reinitScreens_ == ReinitState::True) {
+                this->reinitScreens_ = ReinitState::False;
                 this->display->dropScreen();
                 this->deleteScreens();
                 this->setDisplayTheme();

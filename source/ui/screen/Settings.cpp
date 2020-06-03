@@ -1,8 +1,8 @@
 #include "Application.hpp"
-#include "Forwarder.hpp"
-#include "Lang.hpp"
-#include "Settings.hpp"
-#include "Utils.hpp"
+#include "utils/Forwarder.hpp"
+#include "utils/Lang.hpp"
+#include "ui/screen/Settings.hpp"
+#include "utils/Utils.hpp"
 
 namespace Screen {
     Settings::Settings(Main::Application * a, ScreenCreate sc) {
@@ -40,7 +40,6 @@ namespace Screen {
 
     void Settings::installForwarder() {
         // A message box will be shown regardless of the outcome
-        this->msgbox->close(false);
         this->msgbox->emptyBody();
 
         // Check if forwarder exists
@@ -412,7 +411,7 @@ namespace Screen {
         this->list->addElement(new Aether::ListSeparator());
 
         // INFORMATION
-        lc = new Aether::ListComment("settings.translations"_lang + "\nFrench: xRock\nGerman: Ayk\nItalian: reinzanini\nPortugese: evertonstz\nRussian: Sookie69\nSpanish: ivanmarbin\nTurkish: fpscan");
+        lc = new Aether::ListComment("settings.translations"_lang + "\nFrench: xRock\nGerman: Ayk\nItalian: reinzanini\nKorean: jhs516\nPortugese: evertonstz\nRussian: Sookie69\nSpanish: ivanmarbin\nTurkish: fpscan");
         lc->setTextColour(this->app->theme()->mutedText());
         this->list->addElement(lc);
         lc = new Aether::ListComment("NX Activity Log v" + std::string(VER_STRING) + "\n" + "settings.about"_lang + "\n\n" + "settings.support"_lang + "\nhttps://ko-fi.com/tallbl0nde");
@@ -424,7 +423,7 @@ namespace Screen {
         // Create base message box
         this->msgbox = new Aether::MessageBox();
         this->msgbox->addTopButton("common.buttonHint.ok"_lang, [this](){
-            this->msgbox->close(true);
+            this->msgbox->close();
         });
         this->msgbox->setLineColour(this->app->theme()->mutedLine());
         this->msgbox->setRectangleColour(this->app->theme()->altBG());
